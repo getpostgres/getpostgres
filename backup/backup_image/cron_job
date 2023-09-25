@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# # for passwordless authentication
+# cat > /.pgpass <<EOF
+# *:*:*:$POSTGRES_USER:$POSTGRES_PASSWORD
+# EOF
+# chmod 600 /.pgpass
+
+if [[ "$DUMPALL" == on ]]; then
+    # note that in this scenario output file will be always a plain text file with sql commands 
+    # for unzip gzip -d {backup-name}.sql.gz
+    # psql -f db.out postgres to restore unzipped dumpall
+    timestamp=$(date +%Y_%m_%d_%H_%M_%S)
+    echo "Starting backup of postgresql istance from $MASTER_IP:$PG_PORT"
+    PGPASSFILE=/.pgpass pg_dumpall -U ${POSTGRES_USER} -h ${MASTER_IP} -p ${PG_PORT} -w -v | gzip -9 > ${BACKUP_FOLDER}/postgres-backup-${timestamp}.sql.gz 
+else
+    echo "Starting backup of postgresql database $POSTGRES_DB from $MASTER_IP:$PG_PORT"
+    # do a dump of a specific database
+    timestamp=$(date +%Y_%m_%d_%H_%M_%S)
+    if [["$DUMP_OUTPUT_FORMAT" == "custom"]]; then
+        # note that in this scenario output file will be always a binary file. Restore with pg_restore
+        PGPASSFILE=/.pgpass pg_dump -U ${POSTGRES_USER} -h ${MASTER_IP} -p ${PG_PORT} -d ${POSTGRES_DB} -Fc -v -f "${BACKUP_FOLDER}/${POSTGRES_DB}-backup-${timezone}.sql"
+    else
+        # restore with psql. "psql -d database_name -f backup_name.sql"
+        PGPASSFILE=/.pgpass pg_dump -U ${POSTGRES_USER} -h ${MASTER_IP} -p ${PG_PORT} -d ${POSTGRES_DB} -v -f "${BACKUP_FOLDER}/${POSTGRES_DB}-backup-${timezone}.sql"
+    fi
+fi
+echo "Backup completed"
+
+# rm /.pgpass
+
+
+# env >> /etc/environment
+# exec "cron -f"

@@ -1,0 +1,20 @@
+version: '3.9'
+
+# timezones to set in master.env, replica.env and backup.env
+
+services:
+  
+  replica_db:
+    build: ../replication_base_image/.
+    container_name: postgres_db_replica
+    restart: always
+    env_file:
+      - replica.env
+      - .env
+    environment:
+      TZ: ${TZ}
+    ports:
+      - ${PORT}:5432
+    volumes:
+      - ./postgres-volume:/var/lib/postgresql/data
+      - ./postgres-backups:/var/lib/postgresql/backup

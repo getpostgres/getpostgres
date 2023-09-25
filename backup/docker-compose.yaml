@@ -1,0 +1,15 @@
+services:
+  backup_service:
+      build: ./backup_image/.
+      tty: true #for keep alive container
+      container_name: db_backup_service
+      restart: always
+      env_file:
+        - .env
+      ports:
+        - ${EXTERNAL_PORT}:5432
+      environment:
+        TZ: ${TZ}
+      volumes:
+        - ../../postgres-backups:${BACKUP_FOLDER}
+      
