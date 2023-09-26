@@ -94,11 +94,7 @@ The parameters into the [`.env`](/db/replica/.env) file are the same as describe
 
 In this section, we'll describe the backup functionality of the service. This step should be executed after the PostgreSQL replication deployment is completed. All configuration parameters are stored in an [`.env`](/backup/.env) file located in the [backup](/backup/) folder.
 
-## Postgres Automatic Backup
-
-In this section, we'll describe the backup functionality of the service. This step should be executed after the PostgreSQL replication deployment is completed. All configuration parameters are stored in an `.env` file located in the backup folder.
-
-### Backup Configuration Parameters
+#### Backup Configuration Parameters
 
 The backup service provides the following configuration parameters:
 
@@ -115,7 +111,7 @@ The backup service provides the following configuration parameters:
 - **TZ:** Set the timezone for the container.
 - **EXTERNAL_PORT:** The host port used by the service for external connections.
 
-### Uploading Backups to S3-Compliant Object Storage
+#### Uploading Backups to S3-Compliant Object Storage
 
 This backup service also provides the option to upload backups to S3-compliant object storage. To use this feature, configure the following parameters:
 
